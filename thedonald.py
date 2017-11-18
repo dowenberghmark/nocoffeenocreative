@@ -50,7 +50,7 @@ class TheDonald():
         command = sentence[0]
         if command == "thoughts":
             response = self.get_response(sentence[1])
-            if response: self.last_response = response + ' #realDonaldTrump'
+            if response: self.last_response = response
         elif command == "echo":
             response = self.get_echo(sentence[1])
         elif command == "gif":
@@ -61,7 +61,7 @@ class TheDonald():
         elif command == "help":
             response = self.help_commands()
         elif command == 'tweet' and self.last_response:
-            post_tweet(self.last_response)
+            post_tweet(self.last_response  + ' #realDonaldTrump')
             response = "Tweeted!"
         else:
             response = "You are fired!!!"
@@ -78,7 +78,7 @@ class TheDonald():
         if response:
             slack_client.api_call("chat.postMessage", channel=channel,
                                   text=response, as_user=True)
-            self.last_response = response + ' #realDonaldTrump'
+            self.last_response = response
             
 
 
