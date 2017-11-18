@@ -66,6 +66,7 @@ class TheDonald():
                     post_media(self.last_response, '#realDonaldTrump')
                 else:
                     post_tweet(self.last_response  + ' #realDonaldTrump')
+                self.last_response = ''
             except:
                 pass
             
