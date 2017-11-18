@@ -50,7 +50,7 @@ class TheDonald():
         command = sentence[0]
         if command == "thoughts":
             response = self.get_response(sentence[1])
-            if response: self.last_response = response
+            if response: self.last_response = response + ' #realDonaldTrump'
         elif command == "echo":
             response = self.get_echo(sentence[1])
         elif command == "gif":
@@ -78,12 +78,14 @@ class TheDonald():
         if response:
             slack_client.api_call("chat.postMessage", channel=channel,
                                   text=response, as_user=True)
+            self.last_response = response + ' #realDonaldTrump'
             
 
 
     def handle_reaction(self, timestamp, channel):
         slack_client.api_call("reactions.add", channel=channel, name=random.choice(self.reactionlist), timestamp=timestamp)
-
+  
+  
         
     def parse_gif(self):
         data = requests.get("https://api.giphy.com/v1/gifs/random?api_key=E5zvQ4pyoX0dAhGaIhX1cXBZbMqX4YAj&tag=trump&rating=PG-13")
