@@ -51,7 +51,7 @@ class DonaldGen():
             text = f.read()
 
         # Build the model.
-        text_model = POSifiedText(text, state_size=2)
+        text_model = POSifiedText(text, state_size=1)
 
         return text_model
 
