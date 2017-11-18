@@ -1,4 +1,5 @@
 import os
+import requests
 import time
 from slackclient import SlackClient
 from donald_generator import DonaldGen
@@ -17,7 +18,7 @@ class TheDonald():
     #COMMANDS = ["do", "gif", "help"]
 
 
-        self.COMMANDS = {"do" : "Sure...write some more code then I can do that!", "gif" : ":donald:"  }
+        self.COMMANDS = {"do" : "Sure...write some more code then I can do that!", "dance" : ":donald:"  }
     # instantiate Slack & Twilio clients
 
     def get_echo(self, sentence):
@@ -48,6 +49,9 @@ class TheDonald():
             response = self.get_response(sentence[1])
         elif command == "echo":
             response = self.get_echo(sentence[1])
+        elif command == "gif":
+            response = self.parse_gif()
+        
         elif command in self.COMMANDS.keys():
             response = self.COMMANDS[command]
         elif command == "help":
@@ -57,6 +61,14 @@ class TheDonald():
         slack_client.api_call("chat.postMessage", channel=channel,
                               text=response, as_user=True)
 
+    def parse_gif(self):
+        data = requests.get("https://api.giphy.com/v1/gifs/random?api_key=E5zvQ4pyoX0dAhGaIhX1cXBZbMqX4YAj&tag=trump&rating=PG-13")
+        preurl = data.text.split(',')[4]
+        url = preurl.split(':', 1)[1]
+        url = url.translate({ord(c): None for c in '\'\"\\'})
+        
+        return url
+        
     def parse_slack_output(self, slack_rtm_output):
         """
         The Slack Real Time Messaging API is an events firehose.
