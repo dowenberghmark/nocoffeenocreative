@@ -17,7 +17,8 @@ def clean_tweet(tweet):
     return tweet
 
 
-def get_tweets(screen_name):
+
+def create_client():
     # OAuth process, using the keys and tokens
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -25,9 +26,14 @@ def get_tweets(screen_name):
     # Creation of the actual interface, using authentication
     client = tweepy.API(auth)
 
+    return client
 
-    os.remove('donald.txt')
+def get_tweets(screen_name):
 
+    client = create_client()
+
+    if os.path.exists('donald.txt'):
+        os.remove('donald.txt')
 
        
     with open('donald.txt','a') as donald_file:
@@ -37,7 +43,17 @@ def get_tweets(screen_name):
 
     donald_file.close()
 
+
+def post_tweet(msg):
+
+    client = create_client()
+
+    client.update_status(msg)
+
+
+
 if __name__ == '__main__':
-    get_tweets('@realDonaldTrump')
+    #get_tweets('@realDonaldTrump')
+    post_tweet("Hello World!")
 
 

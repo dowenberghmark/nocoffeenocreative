@@ -2,6 +2,7 @@ import os
 import time
 from slackclient import SlackClient
 from donald_generator import DonaldGen
+from FetchTweets import post_tweet
 
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 
@@ -10,6 +11,7 @@ class TheDonald():
     def __init__(self):
         self.BOT_ID = os.environ.get("BOT_ID")
         self.donald = DonaldGen()
+        self.last_response = ''
     
         
     # constants
@@ -46,14 +48,20 @@ class TheDonald():
         command = sentence[0]
         if command == "thoughts":
             response = self.get_response(sentence[1])
+            if response: self.last_response = response
         elif command == "echo":
             response = self.get_echo(sentence[1])
         elif command in self.COMMANDS.keys():
             response = self.COMMANDS[command]
         elif command == "help":
             response = self.help_commands()
+        elif command == 'tweet' and self.last_response:
+            post_tweet(self.last_response)
+            response = "Tweeted!"
         else:
             response = "You are fired!!!"
+
+
         slack_client.api_call("chat.postMessage", channel=channel,
                               text=response, as_user=True)
 
