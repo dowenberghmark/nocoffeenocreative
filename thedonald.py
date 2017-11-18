@@ -61,7 +61,11 @@ class TheDonald():
         elif command == "help":
             response = self.help_commands()
         elif command == 'tweet' and self.last_response:
-            post_tweet(self.last_response)
+            try:
+                post_tweet(self.last_response)
+            except:
+                pass
+            
             response = "Tweeted!"
         else:
             response = "You are fired!!!"
