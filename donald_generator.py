@@ -28,18 +28,18 @@ def noun_finder(sentence):
 
     words = ["::".join(tag) for tag in nltk.pos_tag(text) ]
 
-    #indices = [i for i, x in enumerate(myList) if re.search(pattern, x)]
+    pattern = r'(.*)\::NN'
     
-    #nouns = [i for i,f re.match(0)'NN' in i]
-
-    pattern = 'r(.*)\::NN'
-    
-    #just_words =
-
-
     nouns = [w for w in words if 'NN' in w]
-    
-    return nouns
+
+    just_words = []
+    for w in words:
+        match = re.match(pattern, w)
+        if match:
+            just_words.append(match.group(1))
+            
+
+    return just_words
 
 
 def print_examples(text_model):
