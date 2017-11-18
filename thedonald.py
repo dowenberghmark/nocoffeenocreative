@@ -69,7 +69,7 @@ class TheDonald():
             except:
                 pass
             
-            response = "Tweeted!"
+            response = "MAKING TWITTER GREAT AGAIN!!"
         else:
             response = "You are fired!!!"
 
