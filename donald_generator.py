@@ -87,7 +87,7 @@ class DonaldGen():
     def reply(self, user_says):
         user_words = self.__noun_finder(user_says)
         self.model.set_user_words(user_words)
-        return self.model.make_short_sentence(140, tries=1000)
+        return self.model.make_short_sentence(140, tries=100)
 
 if __name__ == '__main__':
 

@@ -4,6 +4,8 @@ import time
 from slackclient import SlackClient
 from donald_generator import DonaldGen
 from FetchTweets import post_tweet
+import random
+
 
 slack_client = SlackClient(os.environ.get('SLACK_BOT_TOKEN'))
 
@@ -12,7 +14,7 @@ class TheDonald():
     def __init__(self):
         self.BOT_ID = os.environ.get("BOT_ID")
         self.donald = DonaldGen()
-
+        self.reactionlist = ['dollar', 'coffeeparrot', 'flag-mx', 'flag-us', 'flag-ru']
         self.last_response = ''
     
         # constants
@@ -53,7 +55,7 @@ class TheDonald():
             response = self.get_echo(sentence[1])
         elif command == "gif":
             response = self.parse_gif()
-
+            if response: self.last_response = response
         elif command in self.COMMANDS.keys():
             response = self.COMMANDS[command]
         elif command == "help":
@@ -67,16 +69,25 @@ class TheDonald():
 
         slack_client.api_call("chat.postMessage", channel=channel,
                               text=response, as_user=True)
-
+        if  response == "You are fired!!!":
+            
+            slack_client.api_call("chat.postMessage", channel=channel,
+                                  text=':angry:', as_user=True)
     def handle_normal_text(self, text, channel):
         response = self.get_response(text)
         if response:
             slack_client.api_call("chat.postMessage", channel=channel,
                                   text=response, as_user=True)
+            
 
+
+    def handle_reaction(self, timestamp, channel):
+        slack_client.api_call("reactions.add", channel=channel, name=random.choice(self.reactionlist), timestamp=timestamp)
+
+        
     def parse_gif(self):
         data = requests.get("https://api.giphy.com/v1/gifs/random?api_key=E5zvQ4pyoX0dAhGaIhX1cXBZbMqX4YAj&tag=trump&rating=PG-13")
-        preurl = data.text.split(',')[4]
+        preurl = data.text.split(',')[9]
         url = preurl.split(':', 1)[1]
         url = url.translate({ord(c): None for c in '\'\"\\'})
 
@@ -94,14 +105,14 @@ class TheDonald():
                 if output and 'text' in output and self.AT_BOT in output['text']:
                 # return text after the @ mention, whitespace removed
                     return True, output['text'].split(self.AT_BOT)[1].strip().lower(), \
-                        output['channel']
+                        output['channel'], output['ts']
                 elif output and 'text' in output:
                     if 'user' in output and output['user'] != self.BOT_ID:
-                        return False, output['text'].strip().lower(), output['channel']
+                        return False, output['text'].strip().lower(), output['channel'], output['ts']
                     else:
                         continue
 
-        return None, None, None
+        return None, None, None, None
 
 if __name__ == "__main__":
     READ_WEBSOCKET_DELAY = 1 # 1 second delay between reading from firehose
@@ -110,12 +121,13 @@ if __name__ == "__main__":
         print("StarterBot connected and running!")
 
         while True:
-            is_command, command, channel = thisBot.parse_slack_output(slack_client.rtm_read())
+            is_command, command, channel, timestamp = thisBot.parse_slack_output(slack_client.rtm_read())
 
             if is_command and command and channel:
                 thisBot.handle_command(command, channel)
             elif not is_command and command and channel:
                 thisBot.handle_normal_text(command, channel)
+                thisBot.handle_reaction(timestamp, channel)
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
         print("Connection failed. Invalid Slack token or bot ID?")
