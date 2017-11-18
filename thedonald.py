@@ -10,29 +10,27 @@ class TheDonald():
     def __init__(self):
         self.BOT_ID = os.environ.get("BOT_ID")
         self.donald = DonaldGen()
-    
-        
-    # constants
-        self.AT_BOT = "<@" + self.BOT_ID + ">"
-    #COMMANDS = ["do", "gif", "help"]
 
+        # constants
+        self.AT_BOT = "<@" + self.BOT_ID + ">"
+        #COMMANDS = ["do", "gif", "help"]
 
         self.COMMANDS = {"do" : "Sure...write some more code then I can do that!", "gif" : ":donald:"  }
-    # instantiate Slack & Twilio clients
+        # instantiate Slack & Twilio clients
 
     def get_echo(self, sentence):
         response = sentence
         return response
 
     def get_response(self, sentence):
-        response = self.donald.reply(sentence)    
+        response = self.donald.reply(sentence)
         return response
 
     def help_commands(self):
         helper_string = ""
         for command in self.COMMANDS.keys():
-            helper_string = helper_string+ " " + command 
-            
+            helper_string = helper_string+ " " + command
+
         return ("Some commands" + helper_string)
 
 
@@ -57,6 +55,12 @@ class TheDonald():
         slack_client.api_call("chat.postMessage", channel=channel,
                               text=response, as_user=True)
 
+    def handle_normal_text(self, text, channel):
+        response = self.get_response(text)
+        if response:
+            slack_client.api_call("chat.postMessage", channel=channel,
+                                  text=response, as_user=True)
+
     def parse_slack_output(self, slack_rtm_output):
         """
         The Slack Real Time Messaging API is an events firehose.
@@ -68,24 +72,29 @@ class TheDonald():
             for output in output_list:
                 if output and 'text' in output and self.AT_BOT in output['text']:
                 # return text after the @ mention, whitespace removed
-                    return output['text'].split(self.AT_BOT)[1].strip().lower(), \
-                    output['channel']
-        return None, None
+                    return True, output['text'].split(self.AT_BOT)[1].strip().lower(), \
+                        output['channel']
+                elif output and 'text' in output:
+                    if 'user' in output and output['user'] != self.BOT_ID:
+                        return False, output['text'].strip().lower(), output['channel']
+                    else:
+                        continue
 
+        return None, None, None
 
-    
 if __name__ == "__main__":
     READ_WEBSOCKET_DELAY = 1 # 1 second delay between reading from firehose
     thisBot = TheDonald()
     if slack_client.rtm_connect():
         print("StarterBot connected and running!")
-        
+
         while True:
-            command, channel = thisBot.parse_slack_output(slack_client.rtm_read())
-            if command and channel:
+            is_command, command, channel = thisBot.parse_slack_output(slack_client.rtm_read())
+
+            if is_command and command and channel:
                 thisBot.handle_command(command, channel)
+            elif not is_command and command and channel:
+                thisBot.handle_normal_text(command, channel)
             time.sleep(READ_WEBSOCKET_DELAY)
     else:
         print("Connection failed. Invalid Slack token or bot ID?")
-
-
