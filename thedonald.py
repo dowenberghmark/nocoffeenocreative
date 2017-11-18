@@ -16,7 +16,7 @@ class TheDonald():
         self.donald = DonaldGen()
         self.reactionlist = ['dollar', 'coffeeparrot', 'flag-mx', 'flag-us', 'flag-ru', 'trumpparrot']
         self.last_response = ''
-    
+
         # constants
         self.AT_BOT = "<@" + self.BOT_ID + ">"
         #COMMANDS = ["do", "gif", "help"]
@@ -69,32 +69,29 @@ class TheDonald():
                 self.last_response = ''
             except:
                 pass
-            
+
             response = "MAKING TWITTER GREAT AGAIN!!"
         else:
-            response = "You are fired!!!"
+            response = "You are fired!!! :angry:"
 
 
         slack_client.api_call("chat.postMessage", channel=channel,
                               text=response, as_user=True)
-        if  response == "You are fired!!!":
-            
-            slack_client.api_call("chat.postMessage", channel=channel,
-                                  text=':angry:', as_user=True)
+
     def handle_normal_text(self, text, channel):
         response = self.get_response(text)
         if response:
             slack_client.api_call("chat.postMessage", channel=channel,
                                   text=response, as_user=True)
             self.last_response = response
-            
+
 
 
     def handle_reaction(self, timestamp, channel):
         slack_client.api_call("reactions.add", channel=channel, name=random.choice(self.reactionlist), timestamp=timestamp)
-  
-  
-        
+
+
+
     def parse_gif(self):
         data = requests.get("https://api.giphy.com/v1/gifs/random?api_key=E5zvQ4pyoX0dAhGaIhX1cXBZbMqX4YAj&tag=trump&rating=PG-13")
         preurl = data.text.split(',')[9]
