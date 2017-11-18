@@ -3,7 +3,7 @@ import requests
 import time
 from slackclient import SlackClient
 from donald_generator import DonaldGen
-from FetchTweets import post_tweet
+from FetchTweets import post_tweet, post_media
 import random
 
 
@@ -61,7 +61,10 @@ class TheDonald():
         elif command == "help":
             response = self.help_commands()
         elif command == 'tweet' and self.last_response:
-            post_tweet(self.last_response  + ' #realDonaldTrump')
+            if 'http' in self.last_response:
+                post_media(self.last_response, '#realDonaldTrump')
+            else:
+                post_tweet(self.last_response  + ' #realDonaldTrump')
             response = "Tweeted!"
         else:
             response = "You are fired!!!"

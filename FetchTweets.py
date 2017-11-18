@@ -2,6 +2,7 @@ import tweepy
 import re
 import os
 from twitter_credentials import *
+import requests
 
 def clean_tweet(tweet):
     tweet = re.sub("https?\:\/\/", "", tweet)   #links
@@ -44,16 +45,30 @@ def get_tweets(screen_name):
     donald_file.close()
 
 
+
+def post_media(url, message):
+    api = create_client()
+    filename = 'temp.jpg'
+    request = requests.get(url, stream=True)
+    if request.status_code == 200:
+        with open(filename, 'wb') as image:
+            for chunk in request:
+                image.write(chunk)
+
+        api.update_with_media(filename, status=message)
+        os.remove(filename)
+    else:
+        print("Unable to download image")
+
 def post_tweet(msg):
 
     client = create_client()
 
     client.update_status(msg)
 
-
-
 if __name__ == '__main__':
     #get_tweets('@realDonaldTrump')
-    post_tweet("Hello World!")
-
+    # post_tweet("Hello World!")
+    post_media('https://t.co/MiLd4pOaVg', '#realDonaldTrump')
+    
 

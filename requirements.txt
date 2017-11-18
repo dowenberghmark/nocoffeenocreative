@@ -2,3 +2,4 @@ markovify
 nltk
 slackclient
 tweepy
+requests
