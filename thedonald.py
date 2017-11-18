@@ -14,7 +14,7 @@ class TheDonald():
     def __init__(self):
         self.BOT_ID = os.environ.get("BOT_ID")
         self.donald = DonaldGen()
-        self.reactionlist = ['dollar', 'coffeeparrot', 'flag-mx', 'flag-us', 'flag-ru']
+        self.reactionlist = ['dollar', 'coffeeparrot', 'flag-mx', 'flag-us', 'flag-ru', 'trumpparrot']
         self.last_response = ''
     
         # constants
@@ -61,10 +61,14 @@ class TheDonald():
         elif command == "help":
             response = self.help_commands()
         elif command == 'tweet' and self.last_response:
-            if 'http' in self.last_response:
-                post_media(self.last_response, '#realDonaldTrump')
-            else:
-                post_tweet(self.last_response  + ' #realDonaldTrump')
+            try:
+                if 'http' in self.last_response:
+                    post_media(self.last_response, '#realDonaldTrump')
+                else:
+                    post_tweet(self.last_response  + ' #realDonaldTrump')
+            except:
+                pass
+            
             response = "Tweeted!"
         else:
             response = "You are fired!!!"
