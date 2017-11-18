@@ -74,9 +74,9 @@ class TheDonald():
         else:
             response = "You are fired!!! :angry:"
 
-
-        slack_client.api_call("chat.postMessage", channel=channel,
-                              text=response, as_user=True)
+        if response:
+            slack_client.api_call("chat.postMessage", channel=channel,
+                                  text=response, as_user=True)
 
     def handle_normal_text(self, text, channel):
         response = self.get_response(text)
