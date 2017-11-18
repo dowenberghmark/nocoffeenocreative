@@ -41,7 +41,7 @@ class POSifiedText(markovify.Text):
 
 class DonaldGen():
 
-    def __init__(self, filename="lorem.txt"):
+    def __init__(self, filename="donald.txt"):
         self.model = self.__build_model(filename)
 
     def __build_model(self, filename):
@@ -91,6 +91,6 @@ class DonaldGen():
 
 if __name__ == '__main__':
 
-    donald = DonaldGen("donald.txt")
+    donald = DonaldGen()
     s = donald.reply("wall")
     print(s)
