@@ -26,12 +26,12 @@ def get_tweets(screen_name):
     client = tweepy.API(auth)
 
 
-    new_tweets = client.user_timeline(screen_name=screen_name, tweet_mode='extended', count=30000)
-
     os.remove('donald.txt')
 
-    with open('donald.txt','x') as donald_file:
-       for tweet in new_tweets:
+
+       
+    with open('donald.txt','a') as donald_file:
+       for tweet in tweepy.Cursor(client.user_timeline, screen_name=screen_name, tweet_mode='extended').items():
           tweet = clean_tweet(tweet._json['full_text'])
           donald_file.write(tweet + '\n')
 
