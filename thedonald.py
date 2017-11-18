@@ -14,7 +14,7 @@ class TheDonald():
     def __init__(self):
         self.BOT_ID = os.environ.get("BOT_ID")
         self.donald = DonaldGen()
-        self.reactionlist = ['dollar', 'coffeeparrot', 'flag-mx', 'flag-us', 'flag-ru']
+        self.reactionlist = ['dollar', 'coffeeparrot', 'flag-mx', 'flag-us', 'flag-ru', 'trumpparrot']
         self.last_response = ''
     
         # constants
