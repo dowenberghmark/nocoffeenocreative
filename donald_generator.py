@@ -12,15 +12,15 @@ from nltk.tokenize import TweetTokenizer
 class POSifiedText(markovify.Text):
 
     # Example from https://github.com/jsvine/markovify
-    def word_split(self, sentence):
-        words = re.split(self.word_split_pattern, sentence)
-        words = [ "::".join(tag) for tag in nltk.pos_tag(words) ]
-        return words
-
-    # Example from https://github.com/jsvine/markovify
-    def word_join(self, words):
-        sentence = " ".join(word.split("::")[0] for word in words)
-        return sentence
+    #def word_split(self, sentence):
+    #    words = re.split(self.word_split_pattern, sentence)
+    #    words = [ "::".join(tag) for tag in nltk.pos_tag(words) ]
+    #    return words
+#
+#    # Example from https://github.com/jsvine/markovify
+#    def word_join(self, words):
+#        sentence = " ".join(word.split("::")[0] for word in words)
+#        return sentence
 
     def test_sentence_output(self, words, max_overlap_ratio, max_overlap_total):
         """
@@ -56,18 +56,17 @@ def noun_finder(sentence):
 
     words = ["::".join(tag) for tag in nltk.pos_tag(text) ]
 
-    #indices = [i for i, x in enumerate(myList) if re.search(pattern, x)]
-
-    #nouns = [i for i,f re.match(0)'NN' in i]
-
-    pattern = 'r(.*)\::NN'
-
-    #just_words =
-
+    pattern = r'(.*)\::NN'
 
     nouns = [w for w in words if 'NN' in w]
 
-    return nouns
+    just_words = []
+    for w in words:
+        match = re.match(pattern, w)
+        if match:
+            just_words.append(match.group(1))
+
+    return just_words
 
 
 def print_examples(text_model):
@@ -93,7 +92,6 @@ if __name__ == '__main__':
     sentence = "Put big game trophy decision on hold until such time as I review all conservation facts. Under study for years. Will update soon with Secretary Zinke. Thank you!"
 
     user_words = noun_finder(sentence)
-    user_words = ["lorem", "ipsum"]
 
     print_examples(model)
     # print(user_words)
