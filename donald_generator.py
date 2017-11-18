@@ -34,14 +34,14 @@ class POSifiedText(markovify.Text):
         l_userwords = [s.lower() for s in self.user_words]
 
         if set(l_words).intersection(l_userwords):
-            return markovify.Text.test_sentence_output(self, words, max_overlap_ratio, max_overlap_total)
+            return True #markovify.Text.test_sentence_output(self, words, max_overlap_ratio, max_overlap_total)
         else:
             return False
 
 
 class DonaldGen():
 
-    def __init__(self, filename="lorem.txt"):
+    def __init__(self, filename="donald.txt"):
         self.model = self.__build_model(filename)
 
     def __build_model(self, filename):
@@ -87,10 +87,10 @@ class DonaldGen():
     def reply(self, user_says):
         user_words = self.__noun_finder(user_says)
         self.model.set_user_words(user_words)
-        return self.model.make_short_sentence(140)
+        return self.model.make_short_sentence(140, tries=100)
 
 if __name__ == '__main__':
 
     donald = DonaldGen()
-    s = donald.reply("lorem ipsum")
+    s = donald.reply("wall")
     print(s)
