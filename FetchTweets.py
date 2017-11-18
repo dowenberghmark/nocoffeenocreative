@@ -26,7 +26,7 @@ def get_tweets(screen_name):
     client = tweepy.API(auth)
 
 
-    new_tweets = client.user_timeline(screen_name=screen_name, tweet_mode='extended', count=10000)
+    new_tweets = client.user_timeline(screen_name=screen_name, tweet_mode='extended', count=30000)
 
     os.remove('donald.txt')
 
