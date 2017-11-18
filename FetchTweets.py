@@ -1,5 +1,6 @@
 import tweepy
 import re
+import os
 from twitter_credentials import *
 
 def clean_tweet(tweet):
@@ -27,6 +28,7 @@ def get_tweets(screen_name):
 
     new_tweets = client.user_timeline(screen_name=screen_name, tweet_mode='extended', count=10000)
 
+    os.remove('donald.txt')
 
     with open('donald.txt','x') as donald_file:
        for tweet in new_tweets:
@@ -35,7 +37,7 @@ def get_tweets(screen_name):
 
     donald_file.close()
 
-
-get_tweets('@realDonaldTrump')
+if __name__ == '__main__':
+    get_tweets('@realDonaldTrump')
 
 
