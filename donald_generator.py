@@ -10,17 +10,6 @@ from nltk.tokenize import TweetTokenizer
 
 class POSifiedText(markovify.Text):
 
-        # Example from https://github.com/jsvine/markovify
-    #def word_split(self, sentence):
-    #    words = re.split(self.word_split_pattern, sentence)
-    #    words = [ "::".join(tag) for tag in nltk.pos_tag(words) ]
-    #    return words
-    #
-    #    # Example from https://github.com/jsvine/markovify
-    #    def word_join(self, words):
-    #        sentence = " ".join(word.split("::")[0] for word in words)
-    #        return sentence
-
     def set_user_words(self, user_words):
         self.user_words = user_words
 
