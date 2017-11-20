@@ -93,7 +93,7 @@ class TheDonald():
 
 
     def parse_gif(self):
-        data = requests.get("https://api.giphy.com/v1/gifs/random?api_key=E5zvQ4pyoX0dAhGaIhX1cXBZbMqX4YAj&tag=trump&rating=PG-13")
+        data = requests.get("https://api.giphy.com/v1/gifs/random?api_key="+ GIPHY_KEY "&tag=trump&rating=PG-13")
         preurl = data.text.split(',')[9]
         url = preurl.split(':', 1)[1]
         url = url.translate({ord(c): None for c in '\'\"\\'})
